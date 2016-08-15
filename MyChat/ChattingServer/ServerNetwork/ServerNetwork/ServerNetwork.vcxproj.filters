@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="..\Define.h" />
+    <ClInclude Include="..\ServerLog.h" />
+    <ClInclude Include="..\ServerNetworkErrorEnum.h" />
+    <ClInclude Include="..\TcpNetwork.h" />
+    <ClInclude Include="..\..\..\Common\ErrorCode.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\Packet.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\PacketID.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\conmanip.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\TcpNetwork.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>{6413db26-9399-45ed-bcb2-9eb2ea4b1b64}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
