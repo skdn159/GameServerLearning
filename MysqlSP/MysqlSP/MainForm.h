@@ -27,11 +27,13 @@ public:
 	~MainForm();
 
 	void Init();
-
 	void CreateGUI();
-
 	void ShowModal();
+
 private:
+	void InsertRecords();
+	void SearchRecords();
+	void DeleteRecords();
 
 
 private:
@@ -39,6 +41,18 @@ private:
 
 	std::shared_ptr<DBConnector> m_DBConnector;
 	std::shared_ptr<DBProcess> m_DBProcess;
+
+	std::shared_ptr<button> m_ConnectBtn;
+
+	std::shared_ptr<label> m_CurStateLabel;
+	std::shared_ptr<textbox> m_IDtxtBox;
+	std::shared_ptr<textbox> m_PWtxtBox;
+
+	std::shared_ptr<button> m_InsertBtn;
+	std::shared_ptr<button> m_SearchBtn;
+	std::shared_ptr<button> m_DeleteBtn;
+
+
 
 };
 
