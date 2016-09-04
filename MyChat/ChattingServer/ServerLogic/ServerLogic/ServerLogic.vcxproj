@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="..\ConnectedUserManager.h" />
     <ClInclude Include="..\consoleUtil.h" />
+    <ClInclude Include="..\DBManager.h" />
     <ClInclude Include="..\Lobby.h" />
     <ClInclude Include="..\LobbyManager.h" />
     <ClInclude Include="..\Main.h" />
@@ -31,6 +32,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\ConnectedUserManager.cpp" />
+    <ClCompile Include="..\DBManager.cpp" />
     <ClCompile Include="..\Lobby.cpp" />
     <ClCompile Include="..\LobbyManager.cpp" />
     <ClCompile Include="..\Main.cpp" />

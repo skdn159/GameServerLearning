@@ -56,22 +56,25 @@ bool ClientSceneLobby::ProcessPacket(const short packetId, char* pData)
 	case (short)PACKET_ID::LOBBY_ENTER_ROOM_LIST_RES:
 	{
 		auto pktRes = (Common::PktLobbyRoomListRes*)pData;
+		
+		for (int i = 0; i < pktRes->Count; ++i)
+		{
+			UpdateRoomInfo(&pktRes->RoomInfo[i]);
+		}
 
 		if (pktRes->IsEnd == false)
 		{
-			for (int i = 0; i < pktRes->Count; ++i)
-			{
-				UpdateRoomInfo(&pktRes->RoomInfo[i]);
-			}
-
 			RequestRoomList(pktRes->RoomInfo[pktRes->Count - 1].RoomIndex + 1);
 		}
 		else
 		{
 			SetRoomListGui();
+			RequestUserList(0);
 		}
 	}
 	break;
+
+
 	case (short)PACKET_ID::LOBBY_ENTER_USER_LIST_RES:
 	{
 		auto pktRes = (Common::PktLobbyUserListRes*)pData;
@@ -178,6 +181,7 @@ void ClientSceneLobby::SetRoomListGui()
 {
 	m_IsRoomListWorking = false;
 
+
 	for (auto & room : m_RoomList)
 	{
 		m_LobbyRoomList->at(0).append({ std::to_wstring(room.RoomIndex),
@@ -229,7 +233,7 @@ void ClientSceneLobby::UpdateRoomInfo(Common::RoomSmallInfo* pRoomInfo)
 			m_RoomList.remove_if([&newRoom](auto& room) { return room.RoomIndex == newRoom.RoomIndex; });
 		}
 	}
-	else
+	else // 방정보 초기화 하는경우
 	{
 		std::string roomIndex(std::to_string(newRoom.RoomIndex));
 

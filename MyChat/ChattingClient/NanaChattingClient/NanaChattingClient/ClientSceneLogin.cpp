@@ -6,6 +6,7 @@
 
 ClientSceneLogin::ClientSceneLogin()
 {
+
 }
 
 ClientSceneLogin::~ClientSceneLogin()
@@ -24,7 +25,7 @@ void ClientSceneLogin::Update()
 		auto curTime = std::chrono::system_clock::now();
 		auto diffTimeSec = std::chrono::duration_cast<std::chrono::seconds>(curTime - m_TimeLastedReqLobbyList);
 
-		if (diffTimeSec.count() > 3) // 3초마다 Lobby요청 갱신
+		if (diffTimeSec.count() > 5) // 5초마다 Lobby요청 갱신 해야하나??
 		{
 			m_TimeLastedReqLobbyList = curTime;
 

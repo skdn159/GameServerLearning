@@ -21,6 +21,18 @@ namespace ServerLogic
 			Common::PktLogInRes resPkt;
 		auto reqPkt = (Common::PktLogInReq*)packetInfo.pRefData;
 
+		////////////////////////
+		// To do  -> DB검색해서  Ret 설정 할것.
+
+
+
+
+
+
+		///////////////////////
+
+
+
 		auto addRet = m_pRefUserMgr->AddUser(packetInfo.SessionIndex, reqPkt->szID);
 
 		if (addRet != ERROR_CODE::NONE) {

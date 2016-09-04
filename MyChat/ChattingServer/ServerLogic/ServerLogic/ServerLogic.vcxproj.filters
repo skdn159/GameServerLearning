@@ -10,6 +10,7 @@
     <ClInclude Include="..\User.h" />
     <ClInclude Include="..\UserManager.h" />
     <ClInclude Include="..\ConnectedUserManager.h" />
+    <ClInclude Include="..\DBManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Lobby.cpp" />
@@ -23,5 +24,6 @@
     <ClCompile Include="..\User.cpp" />
     <ClCompile Include="..\UserManager.cpp" />
     <ClCompile Include="..\ConnectedUserManager.cpp" />
+    <ClCompile Include="..\DBManager.cpp" />
   </ItemGroup>
 </Project>

@@ -18,6 +18,8 @@ namespace ServerLogic
 	class UserManager;
 	class LobbyManager;
 	class PacketProcess;
+	class DBManager;
+
 
 	class Main
 	{
@@ -44,6 +46,8 @@ namespace ServerLogic
 		std::unique_ptr<PacketProcess> m_pPacketProc;
 		std::unique_ptr<UserManager> m_pUserMgr;
 		std::unique_ptr<LobbyManager> m_pLobbyMgr;
+		std::unique_ptr<DBManager> m_pDBMgr;
+
 
 	};
 }

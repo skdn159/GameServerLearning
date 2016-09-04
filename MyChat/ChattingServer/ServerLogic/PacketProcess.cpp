@@ -57,6 +57,8 @@ namespace ServerLogic
 	void PacketProcess::Process(PacketInfo packetInfo)
 	{
 		auto packetId = packetInfo.PacketId;
+		printf("\n packetId = %d \n");
+
 
 		if (PacketFuncArray[packetId] == nullptr)
 		{

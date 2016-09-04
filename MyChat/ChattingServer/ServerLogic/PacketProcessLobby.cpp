@@ -18,7 +18,7 @@ namespace ServerLogic
 			// 로비에 들어간다.
 			// 기존 로비에 있는 사람에게 새 사람이 들어왔다고 알려준다
 
-			auto reqPkt = (Common::PktLobbyEnterReq*)packetInfo.pRefData;
+		auto reqPkt = (Common::PktLobbyEnterReq*)packetInfo.pRefData;
 		Common::PktLobbyEnterRes resPkt;
 
 		auto pUserRet = m_pRefUserMgr->GetUser(packetInfo.SessionIndex);

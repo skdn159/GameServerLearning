@@ -8,6 +8,7 @@
 #include "UserManager.h"
 #include "PacketProcess.h"
 #include "LobbyManager.h"
+#include "DBManager.h"
 #include "consoleUtil.h"
 #include "Main.h"
 //#include <winbase.h>
@@ -54,6 +55,11 @@ namespace ServerLogic
 
 		m_pPacketProc = std::make_unique<PacketProcess>();
 		m_pPacketProc->Init(m_pNetwork.get(), m_pUserMgr.get(), m_pLobbyMgr.get(), m_pLogger.get());
+
+		m_pDBMgr = std::make_unique<DBManager>();
+		m_pDBMgr->Init();
+
+
 
 		m_IsRun = true;
 

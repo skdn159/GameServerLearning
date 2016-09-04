@@ -30,7 +30,8 @@ bool ClientSceneRoom::ProcessPacket(const short packetId, char* pData)
 		if (pktRes->ErrorCode == (short)Common::ERROR_CODE::NONE)
 		{
 			m_RoomNum = pktRes->RoomIndex;
-			//m_pRefClientStateMgr->ChangeTxtBoxCurState("Room : " + m_RoomNum);
+			m_pRefClientStateMgr->ChangeTxtBoxCurState("Room : " + m_RoomNum);
+
 		}
 
 		else
@@ -95,9 +96,9 @@ void ClientSceneRoom::CreateUI(form* pform)
 	m_RoomUserList = std::make_shared<listbox>((form&)*m_pForm, nana::rectangle(510, 106, 140, 250));
 	m_RoomUserList->append_header("UserID", 130);
 
-	m_ChattingWindow = std::make_shared<textbox>((form&)*m_pForm, nana::rectangle(655, 20, 240, 400));
-	m_Sendingtxt = std::make_shared<textbox>((form&)*m_pForm, nana::rectangle(655, 425, 190, 25));
-	m_ChattingSendBttn = std::make_shared<button>((form&)*m_pForm, nana::rectangle(850, 425, 50, 23));
+	m_ChattingWindow = std::make_shared<textbox>((form&)*m_pForm, nana::rectangle(655, 20, 240, 600));
+	m_Sendingtxt = std::make_shared<textbox>((form&)*m_pForm, nana::rectangle(655, 625, 190, 25));
+	m_ChattingSendBttn = std::make_shared<button>((form&)*m_pForm, nana::rectangle(850, 625, 50, 23));
 	m_ChattingSendBttn->caption("Send");
 	m_ChattingSendBttn->events().click([&]() { this->RequestRoomChattingMsg(); });
 
@@ -107,10 +108,59 @@ void ClientSceneRoom::CreateUI(form* pform)
 
 void ClientSceneRoom::UpdateUserInfo(bool IsRemove, std::string userID)
 {
+	printf("ADD me TO ROOMLIST!");
+	// RoomList에 추가한다.!!
+	
+	
 
 
 
 
+
+
+
+// 	if (m_IsUserListWorking)
+// 	{
+// 		if (IsRemove == false)
+// 		{
+// 			auto findIter = std::find_if(std::begin(m_UserList), std::end(m_UserList), [&userID](auto& ID) { return ID == userID; });
+// 
+// 			if (findIter == std::end(m_UserList))
+// 			{
+// 				m_UserList.push_back(userID);
+// 			}
+// 		}
+// 		else
+// 		{
+// 			m_UserList.remove_if([&userID](auto& ID) { return ID == userID; });
+// 		}
+// 	}
+// 	else
+// 	{
+// 		if (IsRemove == false)
+// 		{
+// 			for (auto& user : m_LobbyUserList->at(0))
+// 			{
+// 				if (user.text(0) == userID) {
+// 					return;
+// 				}
+// 			}
+// 
+// 			m_LobbyUserList->at(0).append(userID);
+// 		}
+// 		else
+// 		{
+// 			auto i = 0;
+// 			for (auto& user : m_LobbyUserList->at(0))
+// 			{
+// 				if (user.text(0) == userID)
+// 				{
+// 					m_LobbyUserList->erase(user);
+// 					return;
+// 				}
+// 			}
+// 		}
+// 	}
 
 
 }
