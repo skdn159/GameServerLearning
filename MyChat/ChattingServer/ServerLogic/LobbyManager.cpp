@@ -60,6 +60,8 @@ namespace ServerLogic
 
 		// 보낼 데이터를 줄이기 위해 사용하지 않은 LobbyListInfo 크기는 빼고 보내도 된다.
 		m_pRefNetwork->SendData(sessionIndex, (short)PACKET_ID::LOBBY_LIST_RES, sizeof(resPkt), (char*)&resPkt);
+		printf("[Lobby] send Lobby LIST RES! \n ");
+
 	}
 
 }

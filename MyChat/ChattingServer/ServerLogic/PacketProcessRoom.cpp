@@ -95,6 +95,7 @@ namespace ServerLogic
 		// 룸에 새 유저 들어왔다고 알린다
 		pRoom->NotifyEnterUserInfo(pUser->GetIndex(), pUser->GetID().c_str());
 
+		resPkt.RoomIndex = pRoom->GetIndex();
 		m_pRefNetwork->SendData(packetInfo.SessionIndex, (short)PACKET_ID::ROOM_ENTER_RES, sizeof(resPkt), (char*)&resPkt);
 		return ERROR_CODE::NONE;
 
@@ -104,6 +105,52 @@ namespace ServerLogic
 		m_pRefNetwork->SendData(packetInfo.SessionIndex, (short)PACKET_ID::ROOM_ENTER_RES, sizeof(resPkt), (char*)&resPkt);
 		return (ERROR_CODE)__result;
 	}
+
+	ERROR_CODE PacketProcess::RoomUserList(PacketInfo packetInfo)
+	{
+		CHECK_START;
+
+
+		auto result = m_pRefUserMgr->GetUser(packetInfo.SessionIndex);
+		auto errorcode = std::get<0>(result);
+		
+		if (errorcode != ERROR_CODE::NONE) 
+		{
+			CHECK_ERROR(errorcode);
+		}
+
+		auto pUser = std::get<1>(result);
+		
+		if (pUser->IsCurDomainState(User::DOMAIN_STATE::ROOM)==false)
+		{
+			CHECK_ERROR(ERROR_CODE::ROOM_USER_LIST_INVALID_DOMAIN);
+		}
+		
+		auto pLobby = m_pRefLobbyMgr->GetLobby(pUser->GetLobbyIndex());
+		if (pLobby == nullptr) 
+		{
+			CHECK_ERROR(ERROR_CODE::ROOM_USER_LIST_INVALID_LOBBY_INDEX);
+		}
+
+		auto pRoom = pLobby->GetRoom(pUser->GetRoomIndex());
+		if (pRoom == nullptr)
+		{
+			CHECK_ERROR(ERROR_CODE::ROOM_USER_LIST_INVALID_ROOM_INDEX);
+		}
+
+		auto reqPkt = (Common::PktRoomUserInfoReq*)packetInfo.pRefData;
+		pRoom->SendUserList(pUser->GetSessioIndex());
+
+		return ERROR_CODE::NONE;
+
+	CHECK_ERR:
+		Common::PktRoomUserInfoRes resPkt;
+		resPkt.SetError(__result);
+		m_pRefNetwork->SendData(packetInfo.SessionIndex, (short)PACKET_ID::ROOM_ENTER_USER_LIST_RES, sizeof(Common::PktBase), (char*)&resPkt);
+		return (ERROR_CODE)__result;
+
+	}
+
 
 	ERROR_CODE PacketProcess::RoomLeave(PacketInfo packetInfo)
 	{
@@ -205,4 +252,6 @@ namespace ServerLogic
 		m_pRefNetwork->SendData(packetInfo.SessionIndex, (short)PACKET_ID::ROOM_CHAT_RES, sizeof(resPkt), (char*)&resPkt);
 		return (ERROR_CODE)__result;
 	}
+
+
 }

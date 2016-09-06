@@ -49,6 +49,8 @@ namespace ServerLogic
 		PacketFuncArray[(int)commonPacketId::LOBBY_CHAT_REQ] = &PacketProcess::LobbyChat;
 		PacketFuncArray[(int)commonPacketId::WHISPER_REQ] = &PacketProcess::Whisper;
 
+		PacketFuncArray[(int)commonPacketId::ROOM_ENTER_USER_LIST_REQ] = &PacketProcess::RoomUserList;
+
 		PacketFuncArray[(int)commonPacketId::ROOM_ENTER_REQ] = &PacketProcess::RoomEnter;
 		PacketFuncArray[(int)commonPacketId::ROOM_LEAVE_REQ] = &PacketProcess::RoomLeave;
 		PacketFuncArray[(int)commonPacketId::ROOM_CHAT_REQ] = &PacketProcess::RoomChat;
@@ -57,7 +59,7 @@ namespace ServerLogic
 	void PacketProcess::Process(PacketInfo packetInfo)
 	{
 		auto packetId = packetInfo.PacketId;
-		printf("\n packetId = %d \n");
+		printf("\n packetId = %d \n", packetId);
 
 
 		if (PacketFuncArray[packetId] == nullptr)

@@ -25,14 +25,18 @@ namespace ServerLogic
 		ERROR_CODE RemoveUser(const int sessionIndex);
 
 		std::tuple<ERROR_CODE, User*> GetUser(const int sessionIndex);
+		std::tuple<ERROR_CODE, User*> GetUser(const char* pszID);
+
+
+		User* FindUser(const int sessionIndex);
+		//User* FindUser(std::string pszID);
+		User* FindUser(const char* pszID);
 
 
 	private:
 		User* AllocUserObjPoolIndex();
 		void ReleaseUserObjPoolIndex(const int index);
 
-		User* FindUser(const int sessionIndex);
-		User* FindUser(const char* pszID);
 
 	private:
 		std::vector<User> m_UserObjPool;

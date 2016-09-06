@@ -56,10 +56,11 @@ namespace ServerLogic
 		auto GetMaxRoomCount() { return (short)m_RoomList.size(); }
 
 		void NotifyChat(const int sessionIndex, const char* pszUserID, const wchar_t* pszMsg);
-		void NotifyWhisper(const int sessionIndex, const char* pszUserID, const wchar_t* pszMsg);
+		void NotifyWhisper(const int receiveUserSessionIndex, const char* pszUserID, const wchar_t* pszMsg);
 
 	protected:
 		void SendToAllUser(const short packetId, const short dataSize, char* pData, const int passUserindex = -1);
+		void SendToOneUser(const int targetUserindex, const short packetId, const short dataSize, char* pData);
 		User* FindUser(const int userIndex);
 		ERROR_CODE AddUser(User* pUser);
 		void RemoveUser(const int userIndex);

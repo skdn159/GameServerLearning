@@ -106,9 +106,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\..\nana\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\..\nana\build\bin;$(LibraryPath)</LibraryPath>
-    <SourcePath>..\..\nana\include;..\..\..\nana\source\;$(SourcePath)</SourcePath>
+    <IncludePath>..\..\..\..\nana\include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\..\..\nana\build\bin;$(LibraryPath)</LibraryPath>
+    <SourcePath>..\..\..\..\nana\include;..\..\..\nana\source\;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>

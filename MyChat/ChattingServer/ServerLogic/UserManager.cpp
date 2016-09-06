@@ -95,6 +95,22 @@ namespace ServerLogic
 		return{ ERROR_CODE::NONE, pUser };
 	}
 
+	std::tuple<ERROR_CODE, User*> UserManager::GetUser(const char* pszID)
+	{
+		auto user = FindUser(pszID);
+
+		if (user == nullptr) {
+			return{ ERROR_CODE::USER_MGR_INVALID_SESSION_INDEX, nullptr };
+		}
+
+		if (user->IsConfirm() == false) {
+			return{ ERROR_CODE::USER_MGR_NOT_CONFIRM_USER, nullptr };
+		}
+
+		return{ ERROR_CODE::NONE, user };
+	}
+
+
 
 	User* ServerLogic::UserManager::FindUser(const int sessionIndex)
 	{

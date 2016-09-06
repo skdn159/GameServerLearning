@@ -150,6 +150,26 @@ namespace Common
 		char UserID[MAX_USER_ID_SIZE + 1] = { 0, };
 	};
 
+	struct PktRoomUserInfoReq
+	{
+		short RoomIndex;
+	};
+
+	struct UserSmallInfoRoom
+	{
+		char UserID[MAX_USER_ID_SIZE + 1] = { 0, };
+	};
+
+	const int ROOM_MAX_USER = 10;
+	struct PktRoomUserInfoRes : PktBase
+	{
+		short RoomIndex;
+		short UserCount;
+		UserSmallInfoRoom UserInfo[ROOM_MAX_USER];
+	};
+
+
+
 
 	//- 룸 나가기 요청
 	struct PktRoomLeaveReq {};
@@ -204,6 +224,7 @@ namespace Common
 	const int MAX_WHISPER_MSG_SIZE = 256;
 	struct PktWhisperReq
 	{
+		char ReceiveID[MAX_USER_ID_SIZE + 1] = { 0, };
 		wchar_t Msg[MAX_WHISPER_MSG_SIZE + 1] = { 0, };
 	};
 
@@ -211,6 +232,12 @@ namespace Common
 	{
 	};
 
+	struct PktWhisperNtf
+	{
+		char UserID[MAX_USER_ID_SIZE + 1] = { 0, };
+		char ReceiveID[MAX_USER_ID_SIZE + 1] = { 0, };
+		wchar_t Msg[MAX_WHISPER_MSG_SIZE + 1] = { 0, };
+	};
 
 
 #pragma pack(pop)

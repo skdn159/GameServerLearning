@@ -40,6 +40,8 @@ namespace ServerLogic
 		ERROR_CODE CreateRoom(const wchar_t* pRoomTitle);
 		ERROR_CODE EnterUser(User* pUser);
 		ERROR_CODE LeaveUser(const short userIndex);
+		ERROR_CODE SendUserList(const int sessionId);
+
 
 		void SendToAllUser(const short packetId, const short dataSize, char* pData, const int passUserindex = -1);
 		void NotifyEnterUserInfo(const int userIndex, const char* pszUserID);

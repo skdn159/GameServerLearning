@@ -16,14 +16,16 @@ public:
 	void CreateUI(form* pform);
 	void Init(const int maxUserCount);
 	void RequestRoomList(const short startIndex);
-	void RequestUserList(const short startIndex);
+	void RequestLobbyUserList(const short startIndex);
 	void SetRoomListGui();
-	void SetUserListGui();
+	void SetLobbyUserListGui();
 	void UpdateRoomInfo(Common::RoomSmallInfo* pRoomInfo);
 	void UpdateUserInfo(bool IsRemove, std::string userID);
 
 	void RequestCreateRoom();
 	void RequestEnterRoom();
+
+	void RequestWhisperMsg(std::string& msg);
 
 
 private:
@@ -45,6 +47,13 @@ private:
 	std::shared_ptr<button> m_CreateRoombtn;
 	std::shared_ptr<button> m_JoinRoombtn;
 	std::shared_ptr<textbox> m_RoomNametxt;
+
+
+	std::shared_ptr<button> m_WhisperSendbtn;
+	std::shared_ptr<textbox> m_WhisperMsgtxt;
+	std::shared_ptr<textbox> m_WhisperWindow;
+
+	char m_WhisperMsgBuffer[Common::MAX_LOBBY_CHAT_MSG_SIZE];
 
 
 };

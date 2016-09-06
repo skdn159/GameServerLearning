@@ -65,7 +65,10 @@ namespace ServerLogic
 		ERROR_CODE Whisper(PacketInfo packetInfo);
 
 		ERROR_CODE RoomEnter(PacketInfo packetInfo);
+		ERROR_CODE RoomUserList(PacketInfo packetInfo);
+
 		ERROR_CODE RoomLeave(PacketInfo packetInfo);
 		ERROR_CODE RoomChat(PacketInfo packetInfo);
+
 	};
 }

@@ -22,6 +22,25 @@ namespace ServerLogic
 	{
 	}
 
+	ERROR_CODE Room::SendUserList(const int sessionID)
+	{
+		Common::PktRoomUserInfoRes pktRes;
+
+		pktRes.RoomIndex = m_Index;
+		pktRes.UserCount = m_UserList.size();
+
+		for (int i = 0; i < pktRes.UserCount; ++i)
+		{
+			auto& user = m_UserList[i];
+			strncpy_s(pktRes.UserInfo[i].UserID, Common::MAX_USER_ID_SIZE + 1, user->GetID().c_str(), Common::MAX_USER_ID_SIZE);
+		}
+
+		m_pRefNetwork->SendData(sessionID, (short)PACKET_ID::ROOM_ENTER_USER_LIST_RES, sizeof(pktRes), (char*)&pktRes);
+
+		return ERROR_CODE::NONE;
+	}
+
+
 	void ServerLogic::Room::Init(const short index, short int maxUserCount)
 	{
 		m_Index = index;
@@ -72,9 +91,9 @@ namespace ServerLogic
 		if (m_IsUsed == false) {  //이방이 사용하는지 확인
 			return ERROR_CODE::ROOM_ENTER_NOT_CREATED;
 		}
-								//진짜 이방이 맞는지 한번 더 확인
+		//진짜 이방이 맞는지 한번 더 확인
 		auto iter = std::find_if(std::begin(m_UserList), std::end(m_UserList), [userIndex](auto pUser) { return pUser->GetIndex() == userIndex; });
-		if (iter == std::end(m_UserList)) {   
+		if (iter == std::end(m_UserList)) {
 			return ERROR_CODE::ROOM_LEAVE_NOT_MEMBER;
 		}
 
@@ -92,9 +111,9 @@ namespace ServerLogic
 	{
 		for (auto pUser : m_UserList)
 		{
-// 			if (pUser->GetIndex() == passUserindex) {
-// 				continue;
-// 			}
+			// 			if (pUser->GetIndex() == passUserindex) {
+			// 				continue;
+			// 			}
 			m_pRefNetwork->SendData(pUser->GetSessioIndex(), packetId, dataSize, pData);
 		}
 	}

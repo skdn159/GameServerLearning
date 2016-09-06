@@ -49,6 +49,8 @@ namespace ServerLogic
 		resPkt.MaxUserCount = pLobby->GetMaxUserCount();
 		resPkt.MaxRoomCount = pLobby->GetMaxRoomCount();
 		m_pRefNetwork->SendData(packetInfo.SessionIndex, (short)PACKET_ID::LOBBY_ENTER_RES, sizeof(Common::PktLobbyEnterRes), (char*)&resPkt);
+		
+		printf("[Lobby] send Lobby Enter RES! \n ");
 		return ERROR_CODE::NONE;
 
 	CHECK_ERR:
@@ -236,8 +238,27 @@ namespace ServerLogic
 			CHECK_ERROR(ERROR_CODE::WHISPER_INVALID_LOBBY_INDEX);
 		}
 
+		auto receiveUserRet = m_pRefUserMgr->GetUser(reqPkt->ReceiveID);
+		auto receiveErrorCode = std::get<0>(receiveUserRet);
+		if (receiveErrorCode != ERROR_CODE::NONE) {
+			CHECK_ERROR(receiveErrorCode);
+		}
+		auto receiveUser = std::get<1>(receiveUserRet);
 
-		pLobby->NotifyChat(pUser->GetSessioIndex(), pUser->GetID().c_str(), reqPkt->Msg);
+//  		auto receiveUser = m_pRefUserMgr->FindUser(reqPkt->ReceiveID);
+ 		if (receiveUser == nullptr)
+ 		{
+ 			printf("null ptr whisper \n");
+ 			return ERROR_CODE::WHISPER_INVALID_DOMAIN;
+ 		}
+
+		pLobby->NotifyWhisper(receiveUser->GetSessioIndex(), pUser->GetID().c_str(), reqPkt->Msg);
+
+
+//  		Common::PktWhisperNtf whisperPkt;
+//  		strncpy_s(whisperPkt.UserID, _countof(whisperPkt.UserID), pUser->GetID().c_str(), Common::MAX_USER_ID_SIZE);
+//  		wcsncpy_s(whisperPkt.Msg, Common::MAX_WHISPER_MSG_SIZE + 1, reqPkt->Msg, Common::MAX_WHISPER_MSG_SIZE);// 		m_pRefNetwork->SendData(receiveUser->GetSessioIndex(), (short)PACKET_ID::WHISPER_NTF, sizeof(whisperPkt), (char*)&whisperPkt);
+
 
 		m_pRefNetwork->SendData(packetInfo.SessionIndex, (short)PACKET_ID::WHISPER_RES, sizeof(resPkt), (char*)&resPkt);
 		return ERROR_CODE::NONE;

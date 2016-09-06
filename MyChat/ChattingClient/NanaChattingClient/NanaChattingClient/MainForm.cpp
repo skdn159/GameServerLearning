@@ -80,6 +80,8 @@ void MainForm::PacketProcess()
 
 	if (packet.PacketId != 0)
 	{
+		printf("Receive Pkt = %d \n", packet.PacketId);
+
 		m_pClientSceneConnect->ProcessPacket(packet.PacketId, packet.pData);
 		m_pClientSceneLogin->ProcessPacket(packet.PacketId, packet.pData);
 		m_pClientSceneLobby->ProcessPacket(packet.PacketId, packet.pData);

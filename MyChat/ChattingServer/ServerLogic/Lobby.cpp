@@ -196,14 +196,16 @@ namespace ServerLogic
 		SendToAllUser((short)PACKET_ID::LOBBY_CHAT_NTF, sizeof(pkt), (char*)&pkt, sessionIndex); // ³ª ÀÚ½ÅÇÑÅÙ ¾Èº¸³¿
 	}
 
-	void Lobby::NotifyWhisper(const int sessionIndex, const char* pszUserID, const wchar_t* pszMsg)
+	void Lobby::NotifyWhisper(const int receiveUserSessionIndex, const char* pszUserID, const wchar_t* pszMsg)
 	{
-		Common::PktRoomChatNtf pkt;
+		Common::PktWhisperNtf pkt;
 		strncpy_s(pkt.UserID, _countof(pkt.UserID), pszUserID, Common::MAX_USER_ID_SIZE);
 		wcsncpy_s(pkt.Msg, Common::MAX_WHISPER_MSG_SIZE + 1, pszMsg, Common::MAX_WHISPER_MSG_SIZE);
 
-		SendToAllUser((short)PACKET_ID::WHISPER_NTF, sizeof(pkt), (char*)&pkt, sessionIndex); // ³ª ÀÚ½ÅÇÑÅÙ ¾Èº¸³¿
+		SendToOneUser(receiveUserSessionIndex,(short)PACKET_ID::WHISPER_NTF, sizeof(pkt), (char*)&pkt);
 	}
+
+
 
 
 	ERROR_CODE ServerLogic::Lobby::SendRoomList(const int sessionId, const short startRoomId)
@@ -243,6 +245,7 @@ namespace ServerLogic
 		}
 
 		m_pRefNetwork->SendData(sessionId, (short)PACKET_ID::LOBBY_ENTER_ROOM_LIST_RES, sizeof(pktRes), (char*)&pktRes);
+		printf("[Lobby] SEND ROOM LiST RES \n");
 
 		return ERROR_CODE::NONE;
 	}
@@ -304,14 +307,19 @@ namespace ServerLogic
 // 				continue;
 // 			}
 
-			if (pUser.second->IsCurDomainState(User::DOMAIN_STATE::LOBBY) == false) {
-				continue;
-			}
+// 			if (pUser.second->IsCurDomainState(User::DOMAIN_STATE::LOBBY) == false) {
+// 				continue;
+// 			}
 
 			m_pRefNetwork->SendData(pUser.second->GetSessioIndex(), packetId, dataSize, pData);
 		}
 	}
 
 
+	void Lobby::SendToOneUser(const int targetUserIndex, const short packetId, const short dataSize, char* pData)
+	{
+		m_pRefNetwork->SendData(targetUserIndex, packetId, dataSize, pData);
+
+	}
 
 }

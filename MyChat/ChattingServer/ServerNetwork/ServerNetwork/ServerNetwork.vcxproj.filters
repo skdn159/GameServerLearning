@@ -17,9 +17,13 @@
     <ClInclude Include="..\..\..\Common\conmanip.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="..\IOCPNetwork.h" />
+    <ClInclude Include="..\SessionManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\TcpNetwork.cpp" />
+    <ClCompile Include="..\IOCPNetwork.cpp" />
+    <ClCompile Include="..\SessionManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Common">

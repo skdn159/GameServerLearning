@@ -5,6 +5,7 @@
 #include "ClientSceneLobby.h"
 #include <string.h>
 #include <atlstr.h>
+#include <stdlib.h>
 
 //CLIENT_SCENE_TYPE ClientSceneBase::m_CurSceneType = CLIENT_SCENE_TYPE::CONNECT;
 
@@ -37,7 +38,6 @@ bool ClientSceneLobby::ProcessPacket(const short packetId, char* pData)
 			m_pRefClientStateMgr->ChangeTxtBoxCurState("Lobby : "+ std::to_string(m_pRefClientStateMgr->GetLobbyNum()));
 
 			RequestRoomList(0);
-			RequestUserList(0);
 
 		}
 		else
@@ -55,6 +55,7 @@ bool ClientSceneLobby::ProcessPacket(const short packetId, char* pData)
 	break;
 	case (short)PACKET_ID::LOBBY_ENTER_ROOM_LIST_RES:
 	{
+		printf("[Lobby] Room List Receive \n");
 		auto pktRes = (Common::PktLobbyRoomListRes*)pData;
 		
 		for (int i = 0; i < pktRes->Count; ++i)
@@ -69,7 +70,7 @@ bool ClientSceneLobby::ProcessPacket(const short packetId, char* pData)
 		else
 		{
 			SetRoomListGui();
-			RequestUserList(0);
+			RequestLobbyUserList(0);
 		}
 	}
 	break;
@@ -77,20 +78,23 @@ bool ClientSceneLobby::ProcessPacket(const short packetId, char* pData)
 
 	case (short)PACKET_ID::LOBBY_ENTER_USER_LIST_RES:
 	{
+		printf("[Lobby] User List Receive \n");
+
+
 		auto pktRes = (Common::PktLobbyUserListRes*)pData;
+
+		for (int i = 0; i < pktRes->Count; ++i)
+		{
+			UpdateUserInfo(false, pktRes->UserInfo[i].UserID);
+		}
 
 		if (pktRes->IsEnd == false)
 		{
-			for (int i = 0; i < pktRes->Count; ++i)
-			{
-				UpdateUserInfo(false, pktRes->UserInfo[i].UserID);
-			}
-
-			RequestUserList(pktRes->UserInfo[pktRes->Count - 1].LobbyUserIndex + 1);
+			RequestLobbyUserList(pktRes->UserInfo[pktRes->Count - 1].LobbyUserIndex + 1);
 		}
 		else
 		{
-			SetUserListGui();
+			SetLobbyUserListGui();
 		}
 	}
 	break;
@@ -103,6 +107,7 @@ bool ClientSceneLobby::ProcessPacket(const short packetId, char* pData)
 	case (short)PACKET_ID::LOBBY_ENTER_USER_NTF:
 	{
 		auto pktRes = (Common::PktLobbyNewUserInfoNtf*)pData;
+		printf("LOBBY USER SETTING\n");
 		UpdateUserInfo(false, pktRes->UserID);
 	}
 	break;
@@ -112,6 +117,24 @@ bool ClientSceneLobby::ProcessPacket(const short packetId, char* pData)
 		UpdateUserInfo(true, pktRes->UserID);
 	}
 	break;
+
+	case (short)PACKET_ID::WHISPER_NTF:
+	{
+		Common::PktWhisperNtf* pktData = (Common::PktWhisperNtf*)pData;
+		char id[Common::MAX_USER_ID_SIZE + 1] = { '\0', };
+		memcpy(id, pktData->UserID, Common::MAX_USER_ID_SIZE);
+
+		char msg[Common::MAX_WHISPER_MSG_SIZE + 1] = { '\0', };
+		memcpy(msg, pktData->Msg, sizeof(msg));
+
+		m_WhisperWindow->append("(Whisper From) ", true);
+		m_WhisperWindow->append(id, true);
+		m_WhisperWindow->append(": ", true);
+		m_WhisperWindow->append(msg, true);
+		m_WhisperWindow->append("\n", true);
+	}
+	break;
+
 	default:
 		return false;
 	}
@@ -146,10 +169,30 @@ void ClientSceneLobby::CreateUI(form* pform)
 	m_JoinRoombtn = std::make_shared<button>((form&)*m_pForm, nana::rectangle(374, 417, 102, 23));
 	m_JoinRoombtn->caption("Enter Room");
 	m_JoinRoombtn->events().click([&]() {this->RequestEnterRoom(); });
+
+	m_WhisperSendbtn = std::make_shared<button>((form&)*m_pForm, nana::rectangle(525, 650, 50, 23));
+	m_WhisperSendbtn->caption("Whisper");
+	m_WhisperSendbtn->events().click([&]()
+	{
+		std::string msg;
+		std::string tmp;
 	
-		//#todo = select한Room 보여주기
+		int i = 0;
+		while (m_WhisperMsgtxt->getline(i, tmp))
+		{
+			msg += tmp;
+			i++;
+		}
+		this->RequestWhisperMsg(msg);
+		m_WhisperMsgtxt->reset();
+	});
 
 	
+	m_WhisperWindow = std::make_shared<textbox>((form&)*m_pForm, nana::rectangle(170, 470, 340, 170));
+	
+	m_WhisperMsgtxt = std::make_shared<textbox>((form&)*m_pForm, nana::rectangle(170, 650, 340, 23));
+	//m_WhisperMsgtxt 처리 #TODO
+
 }
 
 void ClientSceneLobby::Init(const int maxUserCount)
@@ -168,13 +211,15 @@ void ClientSceneLobby::RequestRoomList(const short startIndex)
 	Common::PktLobbyRoomListReq reqPkt;
 	reqPkt.StartRoomIndex = startIndex;
 	m_pRefNetwork->SendPacket((short)PACKET_ID::LOBBY_ENTER_ROOM_LIST_REQ, sizeof(reqPkt), (char*)&reqPkt);
+	printf("[lobby] RoomList req! \n");
 }
 
-void ClientSceneLobby::RequestUserList(const short startIndex)
+void ClientSceneLobby::RequestLobbyUserList(const short startIndex)
 {
 	Common::PktLobbyUserListReq reqPkt;
 	reqPkt.StartUserIndex = startIndex;
 	m_pRefNetwork->SendPacket((short)PACKET_ID::LOBBY_ENTER_USER_LIST_REQ, sizeof(reqPkt), (char*)&reqPkt);
+	printf("[lobby] UserList req! \n");
 }
 
 void ClientSceneLobby::SetRoomListGui()
@@ -193,7 +238,7 @@ void ClientSceneLobby::SetRoomListGui()
 	m_RoomList.clear();
 }
 
-void ClientSceneLobby::SetUserListGui()
+void ClientSceneLobby::SetLobbyUserListGui()
 {
 	m_IsUserListWorking = false;
 
@@ -352,5 +397,35 @@ void ClientSceneLobby::RequestEnterRoom()
 	reqPkt.WantCreate = false;
 	reqPkt.RoomIndex = roomIndex;
 	m_pRefNetwork->SendPacket((short)PACKET_ID::ROOM_ENTER_REQ, sizeof(reqPkt), (char*)&reqPkt);
+}
+
+void ClientSceneLobby::RequestWhisperMsg(std::string& msg)
+{
+	Common::PktWhisperReq reqPkt;
+
+	auto selectedID = m_LobbyUserList->selected();
+	if (selectedID.empty())
+	{
+		nana::msgbox m((form&)*m_pForm, "Select ID!", nana::msgbox::ok);
+		m.icon(m.icon_warning).show();
+		return;
+	}
+	auto IDindex = selectedID[0].item;
+	std::string IDstr = m_LobbyUserList->at(0).at(IDindex).text(0).c_str();
+	
+	char id[Common::MAX_USER_ID_SIZE + 1] = { '\0', };
+	memcpy(id, IDstr.c_str(), Common::MAX_USER_ID_SIZE);
+	memcpy(reqPkt.ReceiveID, id, Common::MAX_USER_ID_SIZE);
+
+	int msgSize = min(msg.size(), sizeof(m_WhisperMsgBuffer));
+	for (int i = 0; i < msgSize; i++) 
+	{
+		m_WhisperMsgBuffer[i] = msg.at(i);
+	}
+	m_WhisperMsgBuffer[msgSize] = '\0';
+
+	memcpy(reqPkt.Msg, m_WhisperMsgBuffer, msgSize);
+	m_pRefNetwork->SendPacket((short)PACKET_ID::WHISPER_REQ, sizeof(reqPkt), (char*)&reqPkt);
+	printf("WHISPER to %s " , id);
 }
 

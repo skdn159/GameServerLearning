@@ -24,11 +24,19 @@
     <ClInclude Include="..\..\..\Common\Packet.h" />
     <ClInclude Include="..\..\..\Common\PacketID.h" />
     <ClInclude Include="..\Define.h" />
+    <ClInclude Include="..\IOCPNetwork.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\ServerLog.h" />
     <ClInclude Include="..\ServerNetworkErrorEnum.h" />
+    <ClInclude Include="..\SessionManager.h" />
     <ClInclude Include="..\TcpNetwork.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\IOCPNetwork.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\SessionManager.cpp" />
     <ClCompile Include="..\TcpNetwork.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
