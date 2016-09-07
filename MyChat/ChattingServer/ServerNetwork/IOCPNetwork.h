@@ -1,11 +1,13 @@
 #pragma once
-#pragma comment(lib, "ws2_32")
 #include <winsock2.h>
-#include <ws2tcpip.h>
-
-#include <vector>
+#include <mutex>
 #include <deque>
-#include <unordered_map>
+#include <process.h>
+#include <windows.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+#pragma comment(lib, "ws2_32")
 #include "Define.h"
 #include "ServerNetworkErrorEnum.h"
 #include "ServerLog.h"
@@ -13,15 +15,40 @@
 
 namespace ServerNetwork
 {
-	
-
 	class IOCPNetwork
 	{
 	public:
 		IOCPNetwork();
 		~IOCPNetwork();
 
+
+		bool InitServer();
+		void Run();
+		bool Release();
+
+
 	private:
+		
+		static UINT WINAPI AcceptThread(LPVOID param);
+		static UINT WINAPI RecvThread(LPVOID param);
+		static UINT WINAPI SendThread(LPVOID param);
+
+		void AcceptThreadFunc();
+		void RecvThreadFunc();
+		void SendThreadFunc();
+
+	private:
+		bool m_IsStarted = false;
+
+		std::mutex m_Mutex;
+		WSADATA		m_wsaData;
+		SYSTEM_INFO m_SystemInfo;
+		SOCKADDR_IN m_ServerAddress;
+
+		SOCKET		m_hServerSocket;
+		HANDLE		m_hCompletionPort;
+
+		std::deque<HANDLE> m_threadHandleDeque;
 
 	};
 
